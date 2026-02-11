@@ -1,35 +1,77 @@
-<div class="card" style="margin-top: 30px; border-left: 5px solid var(--purple); background: #1a1a1a; padding: 20px; border-radius: 15px;">
-    <h2 style="font-family:'Orbitron'; color:var(--purple); margin-top:0;">📚 PROPART ACADEMY</h2>
-    <p style="font-size:0.85rem; color:#ccc;">¿Compraste una pieza y no sabes cómo instalarla? ¿Quieres aprender a programar llaves o reparar computadoras?</p>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button class="btn" style="background:var(--purple); color:white;" onclick="verLeccion('IMMO')">🔑 CURSO LLAVES</button>
-        <button class="btn" style="background:var(--purple); color:white;" onclick="verLeccion('ECU')">🧪 CURSO ECUS</button>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refaccionaria Millán | Catálogo Oficial</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --red: #ff0000; --dark: #0a0a0a; --white: #ffffff; --gold: #ffcc00; }
+        body { background: var(--dark); color: var(--white); font-family: 'Roboto', sans-serif; margin: 0; padding-bottom: 50px; }
+        .header { background: #000; padding: 20px; text-align: center; border-bottom: 4px solid var(--red); box-shadow: 0 5px 15px rgba(255,0,0,0.3); }
+        h1 { font-family: 'Orbitron'; color: var(--red); text-shadow: 0 0 10px var(--red); margin: 0; }
+        .video-container { width: 100%; max-width: 800px; margin: 20px auto; border-radius: 12px; overflow: hidden; border: 1px solid #333; }
+        video { width: 100%; display: block; }
+        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .search-box { background: #111; padding: 25px; border-radius: 15px; border: 1px solid #333; margin-bottom: 30px; }
+        input, select { width: 100%; padding: 15px; margin: 10px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; font-size: 1rem; outline: none; }
+        input:focus { border-color: var(--red); }
+        .btn-search { background: var(--red); color: #fff; border: none; padding: 18px; width: 100%; border-radius: 8px; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; transition: 0.3s; }
+        .btn-search:hover { background: #b30000; transform: scale(1.02); }
+        .part-card { background: #1a1a1a; padding: 20px; border-radius: 10px; border-left: 5px solid var(--red); display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        .price { color: var(--gold); font-weight: bold; font-size: 1.3rem; }
+        .btn-wa { background: #25d366; color: white; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>REFACCIONARIA MILLÁN</h1>
+        <p style="color:var(--gold); font-size:0.7rem; letter-spacing:3px;">EL CORAZÓN DE TU MOTOR</p>
     </div>
 
-    <div style="margin-top:20px; border-top: 1px solid #333; padding-top:15px;">
-        <b style="color:var(--green); font-size:0.8rem;">🤖 TRADUCTOR DE LÓGICA (Beta)</b>
-        <textarea id="ideaAcademia" placeholder="Ej: Si la llave no tiene chip, bloquear inyección" style="width:100%; margin-top:10px; background:#000; color:var(--green); border:1px solid #444; padding:10px; border-radius:5px;"></textarea>
-        <button class="btn" style="background:var(--green); color:black;" onclick="aprenderCodigo()">TRADUCIR A JAVASCRIPT</button>
-        <code id="codeResult" style="display:block; margin-top:10px; color:var(--gold); font-size:0.75rem;"></code>
+    <div class="container">
+        <div class="video-container">
+            <video controls poster="portada_propart_intro.gif">
+                <source src="video_millan.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="search-box">
+            <h3 style="margin-top:0; color:var(--red); font-family:'Orbitron'; text-align:center;">BUSCADOR DE EXISTENCIAS</h3>
+            <select id="marca">
+                <option value="">-- Selecciona Marca --</option>
+                <option value="Nissan">NISSAN</option>
+                <option value="VW">VOLKSWAGEN</option>
+                <option value="Ford">FORD</option>
+                <option value="Chevrolet">CHEVROLET</option>
+            </select>
+            <input type="text" id="modelo" placeholder="Modelo y Año (Ej: Sentra 2018)">
+            <input type="text" id="pieza" placeholder="¿Qué pieza buscas?">
+            <button class="btn-search" onclick="buscar()">CONSULTAR PIEZA</button>
+        </div>
+
+        <div id="resultado"></div>
     </div>
-</div>
 
-<script>
-function verLeccion(tema) {
-    window.location.href = "https://wa.me/527776838196?text=" + encodeURIComponent("Hola Millán, quiero entrar a la lección de: " + tema);
-}
-
-function aprenderCodigo() {
-    const idea = document.getElementById('ideaAcademia').value.toLowerCase();
-    const res = document.getElementById('codeResult');
-    
-    if(idea.includes("llave") || idea.includes("chip")) {
-        res.innerText = "if (!key.hasChip) {\n  fuelPump.status = 'LOCKED';\n  console.log('Robo detectado');\n}";
-    } else if(idea.includes("voltaje") || idea.includes("bateria")) {
-        res.innerText = "if (batteryVoltage < 12.0) {\n  dashboard.showAlert('Cargar Batería');\n}";
-    } else {
-        res.innerText = "function tallerDigital() {\n  // Tu lógica de mecánico aquí\n}";
-    }
-}
-</script>
+    <script>
+        function buscar() {
+            const m = document.getElementById('marca').value;
+            const mod = document.getElementById('modelo').value;
+            const p = document.getElementById('pieza').value;
+            if(!m || !mod || !p) return alert("Socio, llena los datos para buscar.");
+            
+            document.getElementById('resultado').innerHTML = `
+                <div class="part-card">
+                    <div>
+                        <b style="font-size:1.1rem;">${p.toUpperCase()}</b><br>
+                        <small style="color:#aaa;">PARA ${m} ${mod}</small>
+                    </div>
+                    <div class="price">CONSULTAR</div>
+                    <a href="https://wa.me/527776838196?text=Cotización:_I_busco_${p}_para_${m}_${mod}" class="btn-wa">WHATSAPP</a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
