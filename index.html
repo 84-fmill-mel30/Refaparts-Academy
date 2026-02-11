@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+u<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -84,6 +84,49 @@
     let inventario = JSON.parse(localStorage.getItem('millan_stock')) || [];
     const marcas = ["nissan", "vw", "chevrolet", "ford", "toyota", "honda", "kia", "mg"];
     const piezasBasicas = ["Bobina", "Bujia", "Alternador", "Marcha", "Bomba Agua", "Balatas"];
+    // 1. GENERADOR DE BASE DE DATOS MASIVA (V48.1)
+    let inventario = JSON.parse(localStorage.getItem('millan_stock')) || [];
+
+    if (inventario.length === 0) {
+    const catalogoBase = {
+        "nissan": ["Tsuru III", "Sentra B15/B17", "March", "Versa", "NP300"],
+        "vw": ["Jetta A4/A6", "Golf GTI", "Vento", "Gol", "Pointer"],
+        "chevrolet": ["Chevy C1/C2/C3", "Aveo", "Spark", "Silverado"],
+        "ford": ["Fiesta", "Figo", "F-150", "EcoSport"]
+    };
+
+    const piezasElectricas = [
+        {p: "Bobina de Encendido", precio: 650},
+        {p: "Sensor MAF", precio: 1200},
+        {p: "Sensor CKP (Cigüeñal)", precio: 450},
+        {p: "Marcha / Motor de Arranque", precio: 1800},
+        {p: "Alternador", precio: 2400},
+        {p: "Bomba de Gasolina", precio: 950},
+        {p: "Bujía Iridium (Set)", precio: 580}
+    ];
+
+    // Bucle para generar compatibilidad automática (Años 2005 a 2024)
+    marcas.forEach(m => {
+        if(catalogoBase[m]){
+            catalogoBase[m].forEach(mod => {
+                piezasElectricas.forEach(pie => {
+                    inventario.push({
+                        id: "MIL-" + Math.random().toString(36).substr(2, 4).toUpperCase(),
+                        marca: m,
+                        modelo: mod,
+                        año: "2005-2024", // Rango de compatibilidad
+                        pieza: pie.p,
+                        precio: pie.precio,
+                        stock: 5, // Empezamos con 5 de cada una
+                        codigo: "750" + Math.floor(Math.random() * 1000000) // Simula código de barras real
+                    });
+                });
+            });
+        }
+    });
+    localStorage.setItem('millan_stock', JSON.stringify(inventario));
+}
+    
 
     if (inventario.length === 0) {
         marcas.forEach(m => {
