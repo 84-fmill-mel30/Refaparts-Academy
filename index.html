@@ -38,40 +38,80 @@
         </div>
 
         <div class="search-box">
-            <h3 style="margin-top:0; color:var(--red); font-family:'Orbitron'; text-align:center;">BUSCADOR DE EXISTENCIAS</h3>
-            <select id="marca">
-                <option value="">-- Selecciona Marca --</option>
-                <option value="Nissan">NISSAN</option>
-                <option value="VW">VOLKSWAGEN</option>
-                <option value="Ford">FORD</option>
-                <option value="Chevrolet">CHEVROLET</option>
-            </select>
-            <input type="text" id="modelo" placeholder="Modelo y Año (Ej: Sentra 2018)">
-            <input type="text" id="pieza" placeholder="¿Qué pieza buscas?">
-            <button class="btn-search" onclick="buscar()">CONSULTAR PIEZA</button>
+    <h3 style="margin-top:0; color:var(--red); font-family:'Orbitron'; text-align:center;">BUSCADOR DE EXISTENCIAS</h3>
+    
+    <select id="marca">
+        <option value="">-- Selecciona Marca --</option>
+        <option value="nissan">NISSAN</option>
+        <option value="vw">VOLKSWAGEN</option>
+        <option value="chevrolet">CHEVROLET</option>
+        <option value="ford">FORD</option>
+        <option value="toyota">TOYOTA</option>
+        <option value="honda">HONDA</option>
+        <option value="mazda">MAZDA</option>
+        <option value="kia">KIA / HYUNDAI</option>
+        <option value="dodge_jeep">DODGE / JEEP / CHRYSLER</option>
+        <option value="marcas_chinas">MG / CHIREY / JAC</option>
+    </select>
+    
+    <input type="text" id="modelo" placeholder="Modelo y Año (Ej: Sentra 2018)">
+    <input type="text" id="pieza" placeholder="¿Qué pieza buscas?">
+    <button class="btn-search" onclick="buscar()">CONSULTAR PIEZA</button>
         </div>
 
         <div id="resultado"></div>
     </div>
 
     <script>
-        function buscar() {
-            const m = document.getElementById('marca').value;
-            const mod = document.getElementById('modelo').value;
-            const p = document.getElementById('pieza').value;
-            if(!m || !mod || !p) return alert("Socio, llena los datos para buscar.");
-            
-            document.getElementById('resultado').innerHTML = `
-                <div class="part-card">
-                    <div>
-                        <b style="font-size:1.1rem;">${p.toUpperCase()}</b><br>
-                        <small style="color:#aaa;">PARA ${m} ${mod}</small>
-                    </div>
-                    <div class="price">CONSULTAR</div>
-                    <a href="https://wa.me/527776838196?text=Cotización:_I_busco_${p}_para_${m}_${mod}" class="btn-wa">WHATSAPP</a>
-                </div>
-            `;
-        }
+        // --- ESTA ES TU NUEVA ECU (DENTRO DE <script>) ---
+
+const cobertura = {
+    "nissan": ["Sentra", "Tsuru", "March", "Versa", "Tiida", "NP300", "Altima", "X-Trail", "Pathfinder"],
+    "vw": ["Jetta (A3, A4, A6)", "Golf", "Gol", "Vento", "Polo", "Passat", "Tiguan", "Beetle", "Pointer"],
+    "chevrolet": ["Aveo", "Spark", "Chevy (C1, C2, C3)", "Sonic", "Trax", "Cruze", "Equinox", "Silverado", "Captiva"],
+    "ford": ["Fiesta", "Figo", "Focus", "EcoSport", "Escape", "F-150", "Explorer", "Mustang", "Ranger"],
+    "honda": ["Civic", "CR-V", "Accord", "Fit", "HR-V", "City"],
+    "toyota": ["Corolla", "Hilux", "Tacoma", "RAV4", "Yaris", "Camry", "Sienna"],
+    "kia": ["Rio", "Forte", "Sportage", "Seltos", "Soul"],
+    "hyundai": ["Grand i10", "Accent", "Tucson", "Santa Fe", "Elantra"],
+    "mazda": ["Mazda 3", "Mazda 2", "CX-5", "CX-3", "CX-9"],
+    "dodge_jeep": ["Ram", "Journey", "Grand Cherokee", "Wrangler", "Attitude", "Neon"],
+    "marcas_chinas": ["MG5", "MG ZS", "Chirey Tiggo", "Omoda", "BAIC", "JAC Sei"]
+};
+
+function buscar() {
+    const marcaSel = document.getElementById('marca').value.toLowerCase();
+    const modeloInput = document.getElementById('modelo').value.toLowerCase();
+    const piezaInput = document.getElementById('pieza').value.toLowerCase();
+    const resArea = document.getElementById('resultado');
+
+    if(!marcaSel || !modeloInput || !piezaInput) {
+        return alert("Socio, llena Marca, Modelo y Pieza.");
+    }
+
+    let mensajeExistencia = "✅ DISPONIBLE EN ALMACÉN";
+    let colorPrecio = "var(--gold)";
+
+    // Lógica para detectar si es un modelo que tenemos mapeado
+    const esModeloConocido = cobertura[marcaSel] ? cobertura[marcaSel].some(m => modeloInput.includes(m.toLowerCase())) : false;
+
+    if(!esModeloConocido) {
+        mensajeExistencia = "📦 PEDIDO ESPECIAL (24-48 HRS)";
+        colorPrecio = "#00f3ff"; 
+    }
+
+    resArea.innerHTML = `
+        <div class="part-card" style="border-left: 5px solid var(--red); background: #1a1a1a; padding: 15px; border-radius: 10px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <b style="color:var(--red); font-size: 1.1rem;">${piezaInput.toUpperCase()}</b><br>
+                <small style="color:#aaa;">PARA ${marcaSel.toUpperCase()} ${modeloInput.toUpperCase()}</small><br>
+                <span style="color:${colorPrecio}; font-weight:bold; font-size:0.7rem;">${mensajeExistencia}</span>
+            </div>
+            <a href="https://wa.me/527776838196?text=Cotización_Millán:_Busco_${piezaInput}_para_${marcaSel}_${modeloInput}" 
+               style="background:#25d366; color:white; padding:10px; border-radius:5px; text-decoration:none; font-weight:bold; font-size:0.8rem;">WHATSAPP</a>
+        </div>
+ `;
+    }
     </script>
 </body>
 </html>
