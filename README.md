@@ -1,37 +1,41 @@
-# Refaparts-Academy# 🏎️ REFACCIONARIA MILLÁN | CATÁLOGO & ACADEMY
+# 🏎️ REFACCIONARIA MILLÁN | Venta & Tecnología
 
-![Status](https://img.shields.io/badge/Servicio-Venta_Activa-red) 
-![Entrega](https://img.shields.io/badge/Env%C3%ADos-Cuernavaca_y_Zonas-blue)
+![Servicio](https://img.shields.io/badge/Estado-Venta_Activa-red) 
+![Ubicación](https://img.shields.io/badge/Lugar-Morelos_México-green)
 
-## 📺 PRESENTACIÓN DEL PROYECTO
-![Portada Millán](portada_propart_intro.gif)
-> *Domina la tecnología automotriz con nuestras refacciones y capacitación.*
-
----
-
-## 🛒 PRODUCTOS DESTACADOS (Soliicita vía WhatsApp)
-
-| Producto | Aplicación | Acción |
-| :--- | :--- | :--- |
-| **Computadora (ECU)** | Nissan March / Versa | [📲 Solicitar Info](https://wa.me/527776838196?text=Hola_Millán_me_interesa_la_ECU_de_March) |
-| **Kit de Distribución** | VW Jetta A4 / Clásico | [📲 Solicitar Info](https://wa.me/527776838196?text=Hola_Millán_me_interesa_el_Kit_de_Distribución_VW) |
-| **Marcha (Motor Arranque)** | Chevrolet Aveo / Spark | [📲 Solicitar Info](https://wa.me/527776838196?text=Hola_Millán_me_interesa_la_Marcha_Aveo) |
-| **Cuerpo de Aceleración** | Ford Fiesta / Figo | [📲 Solicitar Info](https://wa.me/527776838196?text=Hola_Millán_me_interesa_el_Cuerpo_de_Aceleración_Ford) |
+## 🛒 TIENDA DIGITAL
+Accede a nuestro buscador de piezas en tiempo real aquí:
+👉 **[ENTRAR A LA REFACCIONARIA](https://tu-usuario.github.io/tu-repo/)**
 
 ---
 
-### 🎓 PROPART ACADEMY INCLUIDA
-No solo te vendemos la pieza, te enseñamos a instalarla y programarla. 
-* **Buscador de Piezas:** Todas las marcas y modelos.
-* **Traductor de Código:** Aprende programación automotriz mientras trabajas.
+## 🎓 ¿QUIERES APRENDER MÁS? | PROPART ACADEMY
+¿Tienes dudas sobre cómo instalar una pieza o quieres aprender sobre electrónica automotriz? No solo vendemos la refacción, ¡te enseñamos cómo funciona!
+
+* **Aprende a programar llaves (IMMO).**
+* **Reparación de computadoras (ECU).**
+* **Traductor de lógica a código.**
+
+💬 **[Pregunta por PROPART ACADEMY vía WhatsApp](https://wa.me/527776838196?text=Hola_Millán_quiero_saber_más_sobre_la_PROPART_ACADEMY)**
 
 ---
 
-### 📍 CONTACTO Y UBICACIÓN
-* **WhatsApp:** [777 683 8196](https://wa.me/527776838196)
-* **Ubicación:** Cuernavaca, Morelos.
-* **Donaciones:** [Móchate con las caguamas aquí](https://www.paypal.me/TU_USUARIO)
+## 📡 HERRAMIENTA PRO PARA DIAGNÓSTICO
+¿Eres mecánico o quieres serlo? Pregunta por nuestra herramienta estrella: **PRO PART DIAGNOSTICS**.
+
+* 🔍 **Escáner OBD2 en tiempo real.**
+* ⚡ **Diagramas interactivos con Inteligencia Artificial.**
+* 🔌 **Pinouts de arneses y computadoras.**
+* 🧊 **Modelos 3D de componentes.**
+
+💬 **[Solicitar Info del ESCÁNER PRO](https://wa.me/527776838196?text=Hola_Millán_me_interesa_la_herramienta_PRO_de_diagnóstico)**
 
 ---
-**Desarrollado por:** [Tu Nombre/Millán]  
-*Especialistas en Diagnóstico y Refacciones de Nueva Generación.*
+
+### 🍺 APOYA EL PROYECTO
+Si te gusta la tecnología que estamos desarrollando para el barrio, ¡invita las caguamas!
+* [Móchate por PayPal](https://www.paypal.me/TU_USUARIO)
+* **CLABE BBVA:** `0123 4567 8901 2345 67`
+
+---
+**Refaccionaria Millán** | *Innovando el camino.*
