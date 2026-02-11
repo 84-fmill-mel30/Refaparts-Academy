@@ -1,0 +1,35 @@
+<div class="card" style="margin-top: 30px; border-left: 5px solid var(--purple); background: #1a1a1a; padding: 20px; border-radius: 15px;">
+    <h2 style="font-family:'Orbitron'; color:var(--purple); margin-top:0;">📚 PROPART ACADEMY</h2>
+    <p style="font-size:0.85rem; color:#ccc;">¿Compraste una pieza y no sabes cómo instalarla? ¿Quieres aprender a programar llaves o reparar computadoras?</p>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button class="btn" style="background:var(--purple); color:white;" onclick="verLeccion('IMMO')">🔑 CURSO LLAVES</button>
+        <button class="btn" style="background:var(--purple); color:white;" onclick="verLeccion('ECU')">🧪 CURSO ECUS</button>
+    </div>
+
+    <div style="margin-top:20px; border-top: 1px solid #333; padding-top:15px;">
+        <b style="color:var(--green); font-size:0.8rem;">🤖 TRADUCTOR DE LÓGICA (Beta)</b>
+        <textarea id="ideaAcademia" placeholder="Ej: Si la llave no tiene chip, bloquear inyección" style="width:100%; margin-top:10px; background:#000; color:var(--green); border:1px solid #444; padding:10px; border-radius:5px;"></textarea>
+        <button class="btn" style="background:var(--green); color:black;" onclick="aprenderCodigo()">TRADUCIR A JAVASCRIPT</button>
+        <code id="codeResult" style="display:block; margin-top:10px; color:var(--gold); font-size:0.75rem;"></code>
+    </div>
+</div>
+
+<script>
+function verLeccion(tema) {
+    window.location.href = "https://wa.me/527776838196?text=" + encodeURIComponent("Hola Millán, quiero entrar a la lección de: " + tema);
+}
+
+function aprenderCodigo() {
+    const idea = document.getElementById('ideaAcademia').value.toLowerCase();
+    const res = document.getElementById('codeResult');
+    
+    if(idea.includes("llave") || idea.includes("chip")) {
+        res.innerText = "if (!key.hasChip) {\n  fuelPump.status = 'LOCKED';\n  console.log('Robo detectado');\n}";
+    } else if(idea.includes("voltaje") || idea.includes("bateria")) {
+        res.innerText = "if (batteryVoltage < 12.0) {\n  dashboard.showAlert('Cargar Batería');\n}";
+    } else {
+        res.innerText = "function tallerDigital() {\n  // Tu lógica de mecánico aquí\n}";
+    }
+}
+</script>
