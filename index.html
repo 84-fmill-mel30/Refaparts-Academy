@@ -1,202 +1,176 @@
-u<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Millán POS | Refaccionaria & Diagnóstico</title>
+    <title>Refaccionaria Millán | POS ELITE V48.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto+Mono&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@zxing/library@latest"></script>
     <style>
-        :root { --red: #ff0000; --dark: #0a0a0a; --green: #0f0; --gold: #ffcc00; }
+        :root { --red: #ff0000; --dark: #0a0a0a; --green: #0f0; --gold: #ffcc00; --blue: #00f3ff; }
         body { background: var(--dark); color: white; font-family: 'Roboto Mono', monospace; margin: 0; padding-bottom: 80px; }
-        .header { background: #000; padding: 15px; border-bottom: 3px solid var(--red); text-align: center; }
+        .header { background: #000; padding: 15px; border-bottom: 3px solid var(--red); text-align: center; box-shadow: 0 0 15px var(--red); }
         .container { padding: 15px; max-width: 800px; margin: auto; }
-        
-        /* Buscador */
-        .card { background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 5px; }
-        .btn { background: var(--red); color: #fff; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; }
-        
-        /* Scanner Video */
-        #interactive { width: 100%; height: 250px; background: #000; border: 2px solid var(--green); display: none; margin-bottom: 10px; }
-
-        /* Panel Admin */
-        #adminPanel { display: none; background: #111; border-top: 2px solid var(--gold); padding: 15px; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
+        .card { background: #111; padding: 15px; border-radius: 10px; border: 1px solid #333; margin-bottom: 20px; border-left: 5px solid var(--red); }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #444; color: #fff; border-radius: 5px; outline: none; }
+        .btn { background: var(--red); color: #fff; border: none; padding: 15px; width: 100%; border-radius: 5px; font-weight: bold; cursor: pointer; font-family: 'Orbitron'; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.65rem; margin-top: 10px; }
         th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-
-        /* Ticket */
-        #ticket { background: white; color: black; padding: 20px; font-family: 'Courier New', monospace; display: none; width: 300px; margin: auto; }
+        th { background: #222; color: var(--gold); }
+        .badge { font-size: 0.6rem; padding: 2px 5px; border-radius: 3px; font-weight: bold; }
+        #ticket { background: white; color: black; padding: 20px; font-family: 'Courier New', monospace; display: none; width: 280px; margin: 20px auto; border: 2px dashed #000; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1 style="font-family:'Orbitron'; color:var(--red); margin:0; font-size:1.2rem;">REFACCIONARIA MILLÁN POS</h1>
+<div class="header">
+    <h1 style="font-family:'Orbitron'; color:var(--red); margin:0;">MILLÁN POS V48.2</h1>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h3 style="color:var(--gold); margin-top:0; font-size:0.9rem;">🔍 BUSCADOR DE EXISTENCIAS (2005-2024)</h3>
+        <select id="sMarca">
+            <option value="">-- Selecciona Marca --</option>
+            <option value="nissan">NISSAN</option>
+            <option value="vw">VOLKSWAGEN</option>
+            <option value="chevrolet">CHEVROLET</option>
+            <option value="ford">FORD</option>
+        </select>
+        <input type="text" id="sModelo" placeholder="Modelo (Ej: Tsuru, Jetta, Aveo)">
+        <input type="text" id="sPieza" placeholder="Pieza (Ej: Bobina, Sensor, Marcha)">
+        <button class="btn" onclick="buscarExistencia()">VERIFICAR STOCK</button>
+        <div id="resBusqueda" style="margin-top:10px;"></div>
     </div>
 
-    <div class="container">
-        <div class="card" id="viewSearch">
-            <h3 style="color:var(--gold); margin-top:0;">🔍 BUSCADOR DE EXISTENCIAS</h3>
-            <select id="sMarca"><option value="">Selecciona Marca</option></select>
-            <input type="text" id="sModelo" placeholder="Modelo (Ej: Sentra)">
-            <input type="text" id="sPieza" placeholder="Pieza (Ej: Bobina)">
-            <button class="btn" onclick="buscarExistencia()">VERIFICAR STOCK</button>
-            <div id="resBusqueda"></div>
-        </div>
-
-        <div style="display:flex; gap:10px;">
-            <button class="btn" style="background:var(--green); color:black;" onclick="toggleScanner()">📷 ESCANEAR PIEZA</button>
-            <button class="btn" style="background:#333;" onclick="toggleAdmin()">⚙️ ADMIN</button>
-        </div>
-
-        <video id="video" style="width: 100%; display:none; border: 2px solid var(--green); margin-top:10px;"></video>
-
-        <div id="adminPanel">
-            <h3 style="color:var(--gold);">📦 CONTROL DE INVENTARIO</h3>
-            <div id="inventarioTabla"></div>
-            <hr>
-            <h4>AÑADIR PRODUCTO</h4>
-            <input type="text" id="newMarca" placeholder="Marca">
-            <input type="text" id="newModelo" placeholder="Modelo">
-            <input type="text" id="newPieza" placeholder="Pieza">
-            <input type="number" id="newPrecio" placeholder="Precio $">
-            <input type="text" id="newCode" placeholder="Código de Barras">
-            <button class="btn" style="background:var(--green); color:black;" onclick="agregarProducto()">GUARDAR EN STOCK</button>
-        </div>
-
-        <div id="ticket">
-            <center>
-                <b>REFACCIONARIA MILLÁN</b><br>
-                Xochitepec, Morelos<br>
-                -------------------------<br>
-                <div id="ticketData"></div>
-                -------------------------<br>
-                <b>TOTAL: <span id="ticketTotal"></span></b><br><br>
-                ¡Gracias por su compra!
-            </center>
-            <button onclick="window.print()" style="margin-top:10px;">IMPRIMIR</button>
-        </div>
+    <div style="display:flex; gap:10px;">
+        <button class="btn" style="background:var(--green); color:black;" onclick="toggleScanner()">📷 ESCANEAR</button>
+        <button class="btn" style="background:#333;" onclick="toggleAdmin()">⚙️ ADMIN</button>
     </div>
+
+    <video id="video" style="width: 100%; display:none; border: 2px solid var(--green); margin-top:10px; border-radius:10px;"></video>
+
+    <div id="adminPanel" style="display:none;" class="card">
+        <h3 style="color:var(--gold);">📦 INVENTARIO MAESTRO</h3>
+        <button class="btn" style="background:var(--blue); color:black; margin-bottom:10px;" onclick="resetInventario()">♻️ REINICIAR BASE DE DATOS</button>
+        <div id="inventarioTabla" style="overflow-x:auto;"></div>
+    </div>
+
+    <div id="ticket">
+        <center>
+            <b>REFACCIONARIA MILLÁN</b><br>
+            <small>Xochitepec, Morelos</small><br>
+            --------------------------<br>
+            <div id="ticketData"></div>
+            --------------------------<br>
+            <b>TOTAL: <span id="ticketTotal"></span></b><br><br>
+            ¡VENTA EXITOSA!
+        </center>
+        <button onclick="window.print()" style="width:100%; margin-top:10px;">IMPRIMIR TICKET</button>
+    </div>
+</div>
 
 <script>
-    // 1. GENERADOR DE BASE DE DATOS MASIVA (V48.1)
+    // --- MOTOR DE DATOS MILLÁN ---
     let inventario = JSON.parse(localStorage.getItem('millan_stock')) || [];
 
-    if (inventario.length === 0) {
-    const catalogoBase = {
-        "nissan": ["Tsuru III", "Sentra B15/B17", "March", "Versa", "NP300"],
-        "vw": ["Jetta A4/A6", "Golf GTI", "Vento", "Gol", "Pointer"],
-        "chevrolet": ["Chevy C1/C2/C3", "Aveo", "Spark", "Silverado"],
-        "ford": ["Fiesta", "Figo", "F-150", "EcoSport"]
-    };
+    function inicializarBase() {
+        const marcas = ["nissan", "vw", "chevrolet", "ford"];
+        const catalogo = {
+            "nissan": ["Tsuru III", "Sentra", "March", "Versa", "NP300"],
+            "vw": ["Jetta A4", "Jetta A6", "Vento", "Golf", "Pointer"],
+            "chevrolet": ["Chevy C2", "Aveo", "Spark", "Silverado"],
+            "ford": ["Fiesta", "Figo", "F-150", "EcoSport"]
+        };
+        const piezas = [
+            {n: "Bobina de Encendido", p: 750},
+            {n: "Sensor CKP", p: 580},
+            {n: "Sensor MAF", p: 1450},
+            {n: "Marcha", p: 1850},
+            {n: "Alternador", p: 2600},
+            {n: "Bomba Gasolina", p: 1100}
+        ];
 
-    const piezasElectricas = [
-        {p: "Bobina de Encendido", precio: 650},
-        {p: "Sensor MAF", precio: 1200},
-        {p: "Sensor CKP (Cigüeñal)", precio: 450},
-        {p: "Marcha / Motor de Arranque", precio: 1800},
-        {p: "Alternador", precio: 2400},
-        {p: "Bomba de Gasolina", precio: 950},
-        {p: "Bujía Iridium (Set)", precio: 580}
-    ];
-
-    // Bucle para generar compatibilidad automática (Años 2005 a 2024)
-    marcas.forEach(m => {
-        if(catalogoBase[m]){
-            catalogoBase[m].forEach(mod => {
-                piezasElectricas.forEach(pie => {
-                    inventario.push({
+        let nuevoStock = [];
+        marcas.forEach(m => {
+            catalogo[m].forEach(mod => {
+                piezas.forEach(pie => {
+                    nuevoStock.push({
                         id: "MIL-" + Math.random().toString(36).substr(2, 4).toUpperCase(),
                         marca: m,
                         modelo: mod,
-                        año: "2005-2024", // Rango de compatibilidad
-                        pieza: pie.p,
-                        precio: pie.precio,
-                        stock: 5, // Empezamos con 5 de cada una
-                        codigo: "750" + Math.floor(Math.random() * 1000000) // Simula código de barras real
+                        año: "2005-2024",
+                        pieza: pie.n,
+                        precio: pie.p,
+                        stock: 5,
+                        codigo: "750" + Math.floor(Math.random() * 1000000)
                     });
                 });
             });
-        }
-    });
-    localStorage.setItem('millan_stock', JSON.stringify(inventario));
-}
-    
-
-    if (inventario.length === 0) {
-        marcas.forEach(m => {
-            piezasBasicas.forEach(p => {
-                inventario.push({
-                    id: Math.random().toString(36).substr(2, 5).toUpperCase(),
-                    marca: m,
-                    modelo: "General",
-                    pieza: p,
-                    precio: 850,
-                    stock: 1,
-                    codigo: "000" + Math.floor(Math.random() * 1000)
-                });
-            });
         });
+        inventario = nuevoStock;
         localStorage.setItem('millan_stock', JSON.stringify(inventario));
+        location.reload(); 
     }
 
-    // Poblar select de marcas
-    const sMarca = document.getElementById('sMarca');
-    marcas.forEach(m => {
-        let opt = document.createElement('option');
-        opt.value = m; opt.innerHTML = m.toUpperCase();
-        sMarca.appendChild(opt);
-    });
+    if (inventario.length === 0) inicializarBase();
 
-    // 2. BUSCADOR
     function buscarExistencia() {
         const m = document.getElementById('sMarca').value;
         const mod = document.getElementById('sModelo').value.toLowerCase();
         const p = document.getElementById('sPieza').value.toLowerCase();
         
         const encontrados = inventario.filter(i => 
-            i.marca === m && 
-            (i.modelo.toLowerCase().includes(mod) || mod === "") &&
+            (i.marca === m || m === "") && 
+            i.modelo.toLowerCase().includes(mod) &&
             i.pieza.toLowerCase().includes(p)
         );
 
         const res = document.getElementById('resBusqueda');
         res.innerHTML = encontrados.length > 0 ? encontrados.map(i => `
-            <div style="background:#222; padding:10px; margin-top:10px; border-left:3px solid var(--green);">
-                <b>${i.pieza} - ${i.marca.toUpperCase()}</b><br>
-                Existencia: ${i.stock} pza(s) | Precio: $${i.precio}<br>
-                <button onclick="vender('${i.id}')" style="background:var(--gold); border:none; padding:5px; margin-top:5px; cursor:pointer;">GENERAR VENTA</button>
+            <div style="background:#222; padding:12px; margin-top:8px; border-radius:5px; border-left:3px solid var(--green);">
+                <b style="color:var(--gold);">${i.pieza}</b><br>
+                <small>${i.marca.toUpperCase()} ${i.modelo} (${i.año})</small><br>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+                    <span>Stock: <b style="color:var(--green);">${i.stock}</b></span>
+                    <span>$${i.precio}</span>
+                    <button onclick="vender('${i.id}')" style="background:var(--gold); border:none; padding:5px 10px; border-radius:3px; font-weight:bold; cursor:pointer;">VENDER</button>
+                </div>
             </div>
-        `).join('') : "<p style='color:red;'>Sin stock. ¿Deseas pedirlo?</p>";
+        `).join('') : "<p style='color:red; text-align:center;'>❌ NO ENCONTRADO EN STOCK</p>";
     }
 
-    // 3. SCANNER DE CÓDIGO DE BARRAS
+    // --- SCANNER ---
     let codeReader = new ZXing.BrowserMultiFormatReader();
     function toggleScanner() {
         const v = document.getElementById('video');
         if (v.style.display === "none") {
             v.style.display = "block";
-            codeReader.decodeFromVideoDevice(null, 'video', (result, err) => {
+            codeReader.decodeFromVideoDevice(null, 'video', (result) => {
                 if (result) {
                     v.style.display = "none";
                     codeReader.reset();
-                    buscarPorCodigo(result.text);
+                    const p = inventario.find(i => i.codigo === result.text);
+                    if(p) vender(p.id); else alert("Código no registrado: " + result.text);
                 }
             });
-        } else {
-            v.style.display = "none";
-            codeReader.reset();
-        }
+        } else { v.style.display = "none"; codeReader.reset(); }
     }
 
-    function buscarPorCodigo(code) {
-        const p = inventario.find(i => i.codigo === code);
-        if (p) vender(p.id);
-        else alert("Código no registrado: " + code);
+    // --- VENTAS Y ADMIN ---
+    function vender(id) {
+        const p = inventario.find(i => i.id === id);
+        if (p && p.stock > 0) {
+            p.stock--;
+            localStorage.setItem('millan_stock', JSON.stringify(inventario));
+            document.getElementById('ticket').style.display = "block";
+            document.getElementById('ticketData').innerHTML = `ART: ${p.pieza}<br>MOD: ${p.marca.toUpperCase()} ${p.modelo}<br>ID: ${p.id}`;
+            document.getElementById('ticketTotal').innerText = "$" + p.precio;
+            alert("Venta realizada. Stock actualizado.");
+            buscarExistencia();
+        } else { alert("¡SIN EXISTENCIAS!"); }
     }
 
-    // 4. ADMIN Y VENTAS
     function toggleAdmin() {
         const p = document.getElementById('adminPanel');
         p.style.display = p.style.display === "none" ? "block" : "none";
@@ -206,50 +180,15 @@ u<!DOCTYPE html>
     function renderTabla() {
         const div = document.getElementById('inventarioTabla');
         div.innerHTML = `<table>
-            <tr><th>Pieza</th><th>Stock</th><th>$$</th><th>Acción</th></tr>
-            ${inventario.map(i => `
-                <tr>
-                    <td>${i.pieza}</td>
-                    <td>${i.stock}</td>
-                    <td>$${i.precio}</td>
-                    <td><button onclick="eliminar('${i.id}')">X</button></td>
-                </tr>
+            <tr><th>PIEZA</th><th>MOD</th><th>STK</th><th>$$</th></tr>
+            ${inventario.slice(0, 50).map(i => `
+                <tr><td>${i.pieza}</td><td>${i.marca[0].toUpperCase()}-${i.modelo}</td><td>${i.stock}</td><td>$${i.precio}</td></tr>
             `).join('')}
-        </table>`;
+        </table><p style="font-size:0.5rem; color:gray;">Mostrando primeros 50 artículos...</p>`;
     }
 
-    function vender(id) {
-        const p = inventario.find(i => i.id === id);
-        if (p.stock > 0) {
-            p.stock--;
-            localStorage.setItem('millan_stock', JSON.stringify(inventario));
-            mostrarTicket(p);
-        } else {
-            alert("No hay existencias");
-        }
-    }
-
-    function mostrarTicket(p) {
-        document.getElementById('ticket').style.display = "block";
-        document.getElementById('ticketData').innerHTML = `${p.pieza}<br>${p.marca.toUpperCase()} ${p.modelo}<br>ID: ${p.id}`;
-        document.getElementById('ticketTotal').innerText = "$" + p.precio;
-        window.scrollTo(0, document.body.scrollHeight);
-    }
-
-    function agregarProducto() {
-        const n = {
-            id: Math.random().toString(36).substr(2, 5).toUpperCase(),
-            marca: document.getElementById('newMarca').value.toLowerCase(),
-            modelo: document.getElementById('newModelo').value,
-            pieza: document.getElementById('newPieza').value,
-            precio: document.getElementById('newPrecio').value,
-            stock: 1,
-            codigo: document.getElementById('newCode').value
-        };
-        inventario.push(n);
-        localStorage.setItem('millan_stock', JSON.stringify(inventario));
-        renderTabla();
-        alert("Producto agregado");
+    function resetInventario() {
+        if(confirm("¿Seguro? Se borrarán tus cambios y volverá al stock inicial.")) inicializarBase();
     }
 </script>
 </body>
