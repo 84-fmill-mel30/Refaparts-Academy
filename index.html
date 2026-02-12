@@ -110,19 +110,22 @@
     if (inventario.length === 0) inicializarBase();
 
     function buscarExistencia() {
-        const m = document.getElementById('sMarca').value.toLowerCase();
-        const modInput = document.getElementById('sModelo').value.toLowerCase();
-        const pInput = document.getElementById('sPieza').value.toLowerCase();
-        
-        const filtrados = inventario.filter(i => {
-            const matchMarca = m === "" || i.marca === m;
-            const matchMod = modInput === "" || i.modelo.toLowerCase().includes(modInput);
-            const matchPieza = pInput === "" || i.pieza.toLowerCase().includes(pInput);
-            return matchMarca && matchMod && matchPieza;
-        });
+    const m = document.getElementById('sMarca').value.toLowerCase();
+    const modInput = document.getElementById('sModelo').value.toLowerCase();
+    const pInput = document.getElementById('sPieza').value.toLowerCase();
+    
+    // FILTRO MEJORADO: Busca coincidencias aunque no sean exactas
+    const filtrados = inventario.filter(i => {
+        const matchMarca = m === "" || i.marca === m;
+        // Ahora busca si el modelo que escribiste está dentro del nombre o viceversa
+        const matchMod = modInput === "" || i.modelo.toLowerCase().includes(modInput) || modInput.includes(i.modelo.toLowerCase());
+        const matchPieza = pInput === "" || i.pieza.toLowerCase().includes(pInput);
+        return matchMarca && matchMod && matchPieza;
+    });
 
-        const res = document.getElementById('resBusqueda');
-        res.innerHTML = filtrados.length > 0 ? filtrados.slice(0, 10).map(i => `
+    const res = document.getElementById('resBusqueda');
+    if (filtrados.length > 0) {
+        res.innerHTML = filtrados.slice(0, 10).map(i => `
             <div class="res-item">
                 <div>
                     <b style="color:var(--gold); font-size:0.8rem;">${i.pieza.toUpperCase()}</b><br>
@@ -133,8 +136,18 @@
                     <button onclick="vender('${i.id}')" style="background:var(--red); border:none; padding:4px 8px; border-radius:3px; color:white; font-size:0.6rem; font-weight:bold; cursor:pointer;">VENDER</button>
                 </div>
             </div>
-        `).join('') : "<p style='color:red; text-align:center;'>❌ No hay en stock físico. Verificando con proveedores...</p>";
+        `).join('');
+    } else {
+        // SI NO EXISTE, TE DA LA OPCIÓN DE AGREGARLO RÁPIDO
+        res.innerHTML = `
+            <div style="text-align:center; padding:10px; border:1px dashed var(--gold);">
+                <p style="color:red; margin:0;">❌ MODELO NO REGISTRADO</p>
+                <p style="font-size:0.7rem;">¿Quieres dar de alta la ${pInput} para ${modInput}?</p>
+                <button onclick="toggleAdmin()" style="background:var(--gold); color:black; border:none; padding:5px; border-radius:3px; font-weight:bold; cursor:pointer;">SÍ, AGREGAR AL STOCK</button>
+            </div>
+        `;
     }
+            }
 
     function vender(id) {
         const p = inventario.find(i => i.id === id);
